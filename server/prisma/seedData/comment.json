@@ -9,7 +9,7 @@
     "id": 2,
     "text": "Can we meet to discuss the navigation algorithm updates?",
     "taskId": 2,
-    "userId": 4
+    "userId": 4 
   },
   {
     "id": 3,
@@ -48,7 +48,7 @@
     "userId": 16
   },
   {
-    "id": 9,
+    "id": 9, 
     "text": "Infrastructure upgrades must be done during low traffic hours.",
     "taskId": 9,
     "userId": 18
