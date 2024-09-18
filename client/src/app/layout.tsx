@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import DashboardWrapper from "./DashboardWrapper";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,6 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <DashboardWrapper>{children}</DashboardWrapper>
+        <Toaster />
       </body>
     </html>
   );

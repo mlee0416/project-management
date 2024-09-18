@@ -4,6 +4,8 @@ import { useDrag } from "react-dnd";
 import { format } from "date-fns";
 import Image from "next/image";
 import { EllipsisVertical, MessageSquareMore } from "lucide-react";
+import { Priority } from "@/types/tasks/task.enum";
+import { formatDate } from "@/functions/date/formatDate";
 
 type TaskProps = {
   task: TaskType;
@@ -20,28 +22,29 @@ export const Task = ({ task }: TaskProps) => {
 
   const taskTagsSplit = task.tags ? task.tags.split(",") : [];
 
-  const formattedStartDate = task.startDate
-    ? format(new Date(task.startDate), "P")
-    : "";
-  const formattedDueDate = task.dueDate
-    ? format(new Date(task.dueDate), "P")
-    : "";
+  const formattedStartDate = formatDate(task.startDate);
+  const formattedDueDate = formatDate(task.dueDate);
 
   const numberOfComments = (task.comments && task.comments.length) || 0;
 
+  const tagColor = (priority: Priority | undefined) => {
+    switch (priority) {
+      case Priority.Urgent:
+        return "bg-red-200 text-red-700";
+      case Priority.High:
+        return "bg-yellow-200 text-yellow-700";
+      case Priority.Medium:
+        return "bg-green-200 text-green-700";
+      case Priority.Low:
+        return "bg-blue-200 text-blue-700";
+      default:
+        return "bg-gray-200 text-gray-700";
+    }
+  };
+
   const PriorityTag = ({ priority }: { priority: TaskType["priority"] }) => (
     <div
-      className={`rounded-full px-2 py-1 text-xs font-semibold ${
-        priority === "Urgent"
-          ? "bg-red-200 text-red-700"
-          : priority === "High"
-            ? "bg-yellow-200 text-yellow-700"
-            : priority === "Medium"
-              ? "bg-green-200 text-green-700"
-              : priority === "Low"
-                ? "bg-blue-200 text-blue-700"
-                : "bg-gray-200 text-gray-700"
-      }`}
+      className={`rounded-full px-2 py-1 text-xs font-semibold ${tagColor(priority)}`}
     >
       {priority}
     </div>
@@ -52,13 +55,13 @@ export const Task = ({ task }: TaskProps) => {
       ref={(instance) => {
         drag(instance);
       }}
-      className={`mb-4 rounded-md bg-white shadow dark:bg-dark-secondary ${
+      className={`mb-4 cursor-pointer rounded-md bg-white shadow dark:bg-dark-secondary ${
         isDragging ? "opacity-50" : "opacity-100"
       }`}
     >
       {task.attachments && task.attachments.length > 0 && (
         <Image
-          src={`https://pm-s3-images.s3.us-east-2.amazonaws.com/${task.attachments[0].fileURL}`}
+          src={`/${task.attachments[0].fileURL}`}
           alt={task.attachments[0].fileName}
           width={400}
           height={200}
@@ -110,7 +113,7 @@ export const Task = ({ task }: TaskProps) => {
             {task.assignee && (
               <Image
                 key={task.assignee.userId}
-                src={`https://pm-s3-images.s3.us-east-2.amazonaws.com/${task.assignee.profilePictureUrl!}`}
+                src={`/${task.assignee.profilePictureUrl!}`}
                 alt={task.assignee.username}
                 width={30}
                 height={30}
@@ -120,7 +123,7 @@ export const Task = ({ task }: TaskProps) => {
             {task.author && (
               <Image
                 key={task.author.userId}
-                src={`https://pm-s3-images.s3.us-east-2.amazonaws.com/${task.author.profilePictureUrl!}`}
+                src={`/${task.author.profilePictureUrl!}`}
                 alt={task.author.username}
                 width={30}
                 height={30}
