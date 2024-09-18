@@ -1,4 +1,4 @@
-import { ERoutes } from "@/enums/routes/ERoutes";
+import { ERoutes } from "@/types/routes/ERoutes";
 import { Briefcase, Home, Search, Settings, User, Users } from "lucide-react";
 
 export const menuList = [
@@ -19,12 +19,12 @@ export const menuList = [
   },
   {
     icon: Settings,
-    label: "Home",
+    label: "Settings",
     href: ERoutes.SETTINGS,
   },
   {
     icon: User,
-    label: "Home",
+    label: "User",
     href: ERoutes.USER,
   },
   {

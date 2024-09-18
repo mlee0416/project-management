@@ -1,4 +1,4 @@
-import { ERoutes } from "@/enums/routes/ERoutes";
+import { ERoutes } from "@/types/routes/ERoutes";
 import {
   AlertCircle,
   AlertOctagon,

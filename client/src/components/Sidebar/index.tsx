@@ -6,7 +6,6 @@ import {
   Briefcase,
   ChevronDown,
   ChevronUp,
-  Home,
   LockIcon,
   LucideIcon,
   X,
@@ -17,12 +16,15 @@ import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { menuList } from "./menuList";
 import { priorityList } from "./priorityList";
+import { useGetProjectsQuery } from "@/state/projectsApi";
 
 const Sidebar = () => {
   const [showProjects, setShowProjects] = useState(true);
   const [showPriority, setShowPriority] = useState(true);
   console.log("showProjects", showProjects, showPriority);
 
+  const { data: projects } = useGetProjectsQuery();
+  console.log("project", projects);
   const dispatch = useAppDispatch();
   const isSidebarCollapsed = useAppSelector(
     (state) => state.global.isSidebarCollapsed,
@@ -72,7 +74,12 @@ const Sidebar = () => {
         {/* Navbar links */}
         <nav className="z-10 w-full">
           {menuList.map((item) => (
-            <SidebarLink icon={item.icon} label={item.label} href={item.href} />
+            <SidebarLink
+              icon={item.icon}
+              label={item.label}
+              href={item.href}
+              key={item.label}
+            />
           ))}
         </nav>
         {/* Projects */}
@@ -90,11 +97,12 @@ const Sidebar = () => {
         {/* Project links */}
         <nav className="z-10 w-full">
           {showProjects &&
-            menuList.map((item) => (
+            projects?.map((project) => (
               <SidebarLink
-                icon={item.icon}
-                label={item.label}
-                href={item.href}
+                key={project.id}
+                icon={Briefcase}
+                label={project.name}
+                href={`/projects/${project.id}`}
               />
             ))}
         </nav>
@@ -104,7 +112,7 @@ const Sidebar = () => {
           className="flex w-full items-center justify-between px-8 py-3 text-gray-500"
         >
           <span className="">Priority</span>
-          {showProjects ? (
+          {showPriority ? (
             <ChevronUp className="h-5 w-5" />
           ) : (
             <ChevronDown className="h-5 w-5" />
@@ -115,6 +123,7 @@ const Sidebar = () => {
           {showPriority &&
             priorityList.map((item) => (
               <SidebarLink
+                key={item.label}
                 icon={item.icon}
                 label={item.label}
                 href={item.href}
