@@ -28,10 +28,9 @@ const BoardView = ({ id, setIsModalNewTaskOpen }: BoardViewProps) => {
   const moveTask = (taskId: number, toStatus: string) => {
     updateTaskStatus({ taskId, status: toStatus });
   };
-
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>An error occured while fetching tasks</div>;
-
+  console.log("tasks", tasks);
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 xl:grid-cols-4">

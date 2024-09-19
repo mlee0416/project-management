@@ -112,7 +112,7 @@ export const Task = ({ task }: TaskProps) => {
           <div className="flex -space-x-[6px] overflow-hidden">
             {task.assignee && (
               <Image
-                key={task.assignee.userId}
+                key={`${task.assignee.userId}/blah`}
                 src={`/${task.assignee.profilePictureUrl!}`}
                 alt={task.assignee.username}
                 width={30}
@@ -122,7 +122,7 @@ export const Task = ({ task }: TaskProps) => {
             )}
             {task.author && (
               <Image
-                key={task.author.userId}
+                key={`${task.author.userId}/${task.author.username}`}
                 src={`/${task.author.profilePictureUrl!}`}
                 alt={task.author.username}
                 width={30}

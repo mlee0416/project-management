@@ -8,7 +8,7 @@ export const api = createApi({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   }),
   reducerPath: "api",
-  tagTypes: ["Projects", "Tasks", "Users", "Teams"],
+  tagTypes: ["Projects", "Tasks", "Users", "Teams", "Users"],
   endpoints: (build) => ({
     getUsers: build.query<User[], void>({
       query: () => "users",
