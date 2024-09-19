@@ -80,3 +80,20 @@ export const updateTaskStatus = async (
     res.status(500).json({ message: `Error updating task: ${error.message}` });
   }
 };
+
+export const deleteTask = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { id } = req.body;
+  try {
+    const deleteTask = await prisma.task.delete({
+      where: {
+        id: Number(id),
+      },
+    });
+    res.json(deleteTask);
+  } catch (error: any) {
+    res.status(500).json({ message: `Error deleting task: ${error.message}` });
+  }
+};
