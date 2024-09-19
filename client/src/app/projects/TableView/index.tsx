@@ -2,7 +2,7 @@ import { useAppSelector } from "@/app/redux";
 import Header from "@/components/Header";
 import { dataGridClassNames, dataGridSxStyles } from "@/lib/utils";
 
-import { useGetTasksQuery } from "@/state/tasksApi";
+import { useGetTasksQuery } from "@/api/tasksApi";
 import { Status } from "@/types/tasks/task.enum";
 
 import { DataGrid, GridColDef } from "@mui/x-data-grid";

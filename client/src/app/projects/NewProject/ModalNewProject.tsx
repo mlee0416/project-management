@@ -2,7 +2,7 @@ import Modal from "@/components/Modal";
 
 import React, { useState } from "react";
 import { formatISO } from "date-fns";
-import { useCreateProjectMutation } from "@/state/projectsApi";
+import { useCreateProjectMutation } from "@/api/projectsApi";
 import { toast } from "sonner";
 
 type NewProjectProps = {
@@ -26,19 +26,18 @@ const NewProjectModal = ({ isOpen, onClose }: NewProjectProps) => {
     const formattedEndDate = formatISO(new Date(endDate), {
       representation: "complete",
     });
-    try {
-      await createProject({
-        name: projectName,
-        description,
-        startDate: formattedStartDate,
-        endDate: formattedEndDate,
-      });
-      toast.success("Project created.");
-    } catch (error) {
-      toast.error("Error occured when creating a project. Please try again.");
-    } finally {
-      onClose();
-    }
+    createProject({
+      name: projectName,
+      description,
+      startDate: formattedStartDate,
+      endDate: formattedEndDate,
+    })
+      .unwrap()
+      .then(() => toast.success("Project created"))
+      .catch(() =>
+        toast.error("Error occured when creating a project. Please try again"),
+      )
+      .finally(() => onClose());
   };
 
   const isFormValid = () => {

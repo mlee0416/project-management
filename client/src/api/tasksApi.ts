@@ -5,14 +5,14 @@ export const tasksApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getTasks: builder.query<Task[], { projectId: number }>({
       query: ({ projectId }) => `tasks?projectId=${projectId}`,
-      providesTags: ["Tasks"],
+      providesTags: (result) =>
+        result
+          ? result.map(({ id }) => ({ type: "Tasks" as const, id }))
+          : [{ type: "Tasks" as const }],
     }),
     getTasksByUser: builder.query<Task[], number>({
       query: (userId) => `tasks/user/${userId}`,
-      providesTags: (result, error, userId) =>
-        result
-          ? result.map(({ id }) => ({ type: "Tasks", id }))
-          : [{ type: "Tasks", id: userId }],
+      providesTags: ["Tasks"],
     }),
     createTask: builder.mutation<Task, Partial<Task>>({
       query: (task) => ({
@@ -31,9 +31,15 @@ export const tasksApi = api.injectEndpoints({
         method: "PATCH",
         body: { status },
       }),
-      invalidatesTags: (result, error, { taskId }) => [
-        { type: "Tasks", id: taskId },
-      ],
+      invalidatesTags: ["Tasks"],
+    }),
+    deleteTask: builder.mutation<Task, number>({
+      query: (id) => ({
+        url: "tasks",
+        method: "DELETE",
+        body: { id },
+      }),
+      invalidatesTags: ["Tasks"],
     }),
   }),
 });
@@ -43,4 +49,5 @@ export const {
   useCreateTaskMutation,
   useUpdateTaskStatusMutation,
   useGetTasksByUserQuery,
+  useDeleteTaskMutation,
 } = tasksApi;

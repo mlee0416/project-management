@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import TaskCard from "@/components/TaskCard";
-import { useGetTasksQuery } from "@/state/tasksApi";
+import { useGetTasksQuery } from "@/api/tasksApi";
 import { Task } from "@/types/tasks/task.interface";
 import React from "react";
 

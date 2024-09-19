@@ -16,7 +16,7 @@ import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { menuList } from "./menuList";
 import { priorityList } from "./priorityList";
-import { useGetProjectsQuery } from "@/state/projectsApi";
+import { useGetProjectsQuery } from "@/api/projectsApi";
 
 const Sidebar = () => {
   const [showProjects, setShowProjects] = useState(true);

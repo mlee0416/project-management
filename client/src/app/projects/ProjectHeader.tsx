@@ -10,10 +10,15 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import NewProjectModal from "./NewProject/ModalNewProject";
+import { formatDate } from "@/functions/date/formatDate";
 
 type ProjectHeaderProps = {
   activeTab: string;
   setActiveTab: (tabName: string) => void;
+  name?: string;
+  description?: string;
+  startDate?: string;
+  endDate?: string;
 };
 
 const TAB_LIST = [
@@ -34,7 +39,14 @@ const TAB_LIST = [
     icon: <Table className="h-5 w-5" />,
   },
 ];
-const ProjectHeader = ({ activeTab, setActiveTab }: ProjectHeaderProps) => {
+const ProjectHeader = ({
+  activeTab,
+  setActiveTab,
+  name,
+  description,
+  startDate,
+  endDate,
+}: ProjectHeaderProps) => {
   const [isModalNewProjectOpen, setIsModalNewProjectOpen] = useState(false);
 
   return (
@@ -45,7 +57,7 @@ const ProjectHeader = ({ activeTab, setActiveTab }: ProjectHeaderProps) => {
       />
       <div className="pb-6 pt-6 lg:pb-4 lg:pt-8">
         <Header
-          name="Product Design Development"
+          name="Projects"
           buttonComponent={
             <button
               className="flex items-center rounded-md bg-blue-primary px-3 py-2 text-white hover:bg-blue-600"
@@ -56,8 +68,18 @@ const ProjectHeader = ({ activeTab, setActiveTab }: ProjectHeaderProps) => {
           }
         />
       </div>
+      <div className="dark:border-stroke flex items-center gap-2 border-t border-gray-200 py-4">
+        <div className="flex flex-col">
+          <h1 className="text-xl font-semibold">{name}</h1>
+          <p>{description}</p>
+          <div className="flex gap-4">
+            <p>Start Date: {formatDate(startDate)}</p>
+            <p>End Date: {formatDate(endDate)}</p>
+          </div>
+        </div>
+      </div>
       {/* Tabs */}
-      <div className="dark:border-stroke md: flex flex-wrap-reverse items-center gap-2 border-y border-gray-200 pb-[8px] pt-2">
+      <div className="flex flex-wrap-reverse gap-2 border-y border-gray-200 pb-[8px] pt-2 dark:border-stroke-dark md:items-center">
         <div className="flex flex-1 items-center gap-2 md:gap-4">
           {TAB_LIST.map((tab) => (
             <TabButton

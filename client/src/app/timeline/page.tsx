@@ -2,7 +2,7 @@
 
 import { useAppSelector } from "@/app/redux";
 import Header from "@/components/Header";
-import { useGetProjectsQuery } from "@/state/projectsApi";
+import { useGetProjectsQuery } from "@/api/projectsApi";
 import { DisplayOption, Gantt, ViewMode } from "gantt-task-react";
 import "gantt-task-react/dist/index.css";
 import React, { useMemo, useState } from "react";

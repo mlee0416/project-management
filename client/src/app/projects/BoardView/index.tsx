@@ -1,7 +1,4 @@
-import {
-  useGetTasksQuery,
-  useUpdateTaskStatusMutation,
-} from "@/state/tasksApi";
+import { useGetTasksQuery, useUpdateTaskStatusMutation } from "@/api/tasksApi";
 import { Status } from "@/types/tasks/task.enum";
 import React from "react";
 import { DndProvider } from "react-dnd";

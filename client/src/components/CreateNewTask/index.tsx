@@ -2,13 +2,13 @@ import Modal from "@/components/Modal";
 
 import React from "react";
 import { formatISO } from "date-fns";
-import { useCreateTaskMutation } from "@/state/tasksApi";
+import { useCreateTaskMutation } from "@/api/tasksApi";
 import { Priority, Status } from "@/types/tasks/task.enum";
 import { Form, useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useGetUsersQuery } from "@/state/api";
+import { useGetUsersQuery } from "@/api/api";
 import Image from "next/image";
 import { toast } from "sonner";
 
@@ -72,21 +72,21 @@ const CreateNewTaskModal = ({
     const formattedDueDate = formatISO(new Date(values.dueDate), {
       representation: "complete",
     });
-    try {
-      await createTask({
-        ...values,
-        startDate: formattedStartDate,
-        dueDate: formattedDueDate,
-        authorUserId: parseInt(values.authorUserId),
-        assignedUserId: parseInt(values.assignedUserId),
-        projectId: id !== null ? Number(id) : Number(values.projectId),
-      });
-      toast.success("Task created");
-    } catch (error) {
-      toast.error(`Unable to create task: ${error}`);
-    } finally {
-      closeCreateNewTaskModal();
-    }
+
+    createTask({
+      ...values,
+      startDate: formattedStartDate,
+      dueDate: formattedDueDate,
+      authorUserId: parseInt(values.authorUserId),
+      assignedUserId: parseInt(values.assignedUserId),
+      projectId: id !== null ? Number(id) : Number(values.projectId),
+    })
+      .unwrap()
+      .then(() => toast.success("Task created"))
+      .catch((error) =>
+        toast.error(`Unable to create task: ${error?.data?.message}`),
+      )
+      .finally(() => closeCreateNewTaskModal());
   };
 
   const closeCreateNewTaskModal = () => {

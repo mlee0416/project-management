@@ -1,5 +1,5 @@
 import { useAppSelector } from "@/app/redux";
-import { useGetTasksQuery } from "@/state/tasksApi";
+import { useGetTasksQuery } from "@/api/tasksApi";
 import { DisplayOption, Gantt, ViewMode } from "gantt-task-react";
 import "gantt-task-react/dist/index.css";
 import React, { useMemo, useState } from "react";

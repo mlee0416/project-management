@@ -6,12 +6,27 @@ import Image from "next/image";
 import { EllipsisVertical, MessageSquareMore } from "lucide-react";
 import { Priority } from "@/types/tasks/task.enum";
 import { formatDate } from "@/functions/date/formatDate";
+import { Menu, MenuItem } from "@mui/material";
+import { useDeleteTaskMutation } from "@/api/tasksApi";
+import { toast } from "sonner";
 
 type TaskProps = {
   task: TaskType;
 };
 
 export const Task = ({ task }: TaskProps) => {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const [deleteTask] = useDeleteTaskMutation();
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "task",
     item: { id: task.id },
@@ -40,6 +55,16 @@ export const Task = ({ task }: TaskProps) => {
       default:
         return "bg-gray-200 text-gray-700";
     }
+  };
+
+  const handleDeleteTask = async () => {
+    deleteTask(task.id)
+      .unwrap()
+      .then(() => toast.success("Task deleted"))
+      .catch((error) =>
+        toast.error(`Cannot delete task: ${error?.data?.message}`),
+      )
+      .finally(() => handleClose());
   };
 
   const PriorityTag = ({ priority }: { priority: TaskType["priority"] }) => (
@@ -84,9 +109,25 @@ export const Task = ({ task }: TaskProps) => {
               ))}
             </div>
           </div>
-          <button className="flex h-6 w-4 flex-shrink-0 items-center justify-center dark:text-neutral-500">
-            <EllipsisVertical size={26} />
-          </button>
+          <div>
+            <button
+              onClick={handleClick}
+              className="flex h-6 w-4 flex-shrink-0 items-center justify-center dark:text-neutral-500"
+            >
+              <EllipsisVertical size={26} />
+            </button>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+            >
+              <MenuItem onClick={handleDeleteTask}>Delete</MenuItem>
+            </Menu>
+          </div>
         </div>
 
         <div className="my-3 flex justify-between">
