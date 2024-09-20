@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { formatISO } from "date-fns";
 import { useCreateProjectMutation } from "@/api/projectsApi";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type NewProjectProps = {
   isOpen: boolean;
@@ -17,6 +18,7 @@ const NewProjectModal = ({ isOpen, onClose }: NewProjectProps) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
+  const router = useRouter();
   const handleSubmit = async () => {
     if (!projectName || !startDate || !endDate) return;
 
@@ -33,7 +35,11 @@ const NewProjectModal = ({ isOpen, onClose }: NewProjectProps) => {
       endDate: formattedEndDate,
     })
       .unwrap()
-      .then(() => toast.success("Project created"))
+      .then((res) => {
+        console.log("res.id", res.id);
+        toast.success("Project created");
+        router.push(`/projects/${res.id}`);
+      })
       .catch(() =>
         toast.error("Error occured when creating a project. Please try again"),
       )

@@ -10,15 +10,12 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import NewProjectModal from "./NewProject/ModalNewProject";
-import { formatDate } from "@/functions/date/formatDate";
+import ProjectDescription from "./ProjectDescription";
 
 type ProjectHeaderProps = {
   activeTab: string;
   setActiveTab: (tabName: string) => void;
-  name?: string;
-  description?: string;
-  startDate?: string;
-  endDate?: string;
+  id: string;
 };
 
 const TAB_LIST = [
@@ -39,14 +36,7 @@ const TAB_LIST = [
     icon: <Table className="h-5 w-5" />,
   },
 ];
-const ProjectHeader = ({
-  activeTab,
-  setActiveTab,
-  name,
-  description,
-  startDate,
-  endDate,
-}: ProjectHeaderProps) => {
+const ProjectHeader = ({ activeTab, setActiveTab, id }: ProjectHeaderProps) => {
   const [isModalNewProjectOpen, setIsModalNewProjectOpen] = useState(false);
 
   return (
@@ -68,16 +58,7 @@ const ProjectHeader = ({
           }
         />
       </div>
-      <div className="dark:border-stroke flex items-center gap-2 border-t border-gray-200 py-4">
-        <div className="flex flex-col">
-          <h1 className="text-xl font-semibold">{name}</h1>
-          <p>{description}</p>
-          <div className="flex gap-4">
-            <p>Start Date: {formatDate(startDate)}</p>
-            <p>End Date: {formatDate(endDate)}</p>
-          </div>
-        </div>
-      </div>
+      <ProjectDescription id={id} />
       {/* Tabs */}
       <div className="flex flex-wrap-reverse gap-2 border-y border-gray-200 pb-[8px] pt-2 dark:border-stroke-dark md:items-center">
         <div className="flex flex-1 items-center gap-2 md:gap-4">

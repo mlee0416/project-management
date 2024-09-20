@@ -1,7 +1,6 @@
 import { Task as TaskType } from "@/types/tasks/task.interface";
 import React from "react";
 import { useDrag } from "react-dnd";
-import { format } from "date-fns";
 import Image from "next/image";
 import { EllipsisVertical, MessageSquareMore } from "lucide-react";
 import { Priority } from "@/types/tasks/task.enum";
@@ -30,7 +29,7 @@ export const Task = ({ task }: TaskProps) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "task",
     item: { id: task.id },
-    collect: (monitor: any) => ({
+    collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
   }));
@@ -65,6 +64,10 @@ export const Task = ({ task }: TaskProps) => {
         toast.error(`Cannot delete task: ${error?.data?.message}`),
       )
       .finally(() => handleClose());
+  };
+
+  const handleEditTask = () => {
+    console.log("opening task");
   };
 
   const PriorityTag = ({ priority }: { priority: TaskType["priority"] }) => (
@@ -123,8 +126,10 @@ export const Task = ({ task }: TaskProps) => {
               onClose={handleClose}
               MenuListProps={{
                 "aria-labelledby": "basic-button",
+                sx: { paddingTop: 0, paddingBottom: 0 },
               }}
             >
+              <MenuItem onClick={handleEditTask}>Edit</MenuItem>
               <MenuItem onClick={handleDeleteTask}>Delete</MenuItem>
             </Menu>
           </div>

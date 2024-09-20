@@ -4,7 +4,7 @@ import Header from "../Header";
 import { X } from "lucide-react";
 
 type ModalProps = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   isOpen: boolean;
   onClose: () => void;
   name: string;

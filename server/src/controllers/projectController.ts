@@ -62,6 +62,11 @@ export const deleteProject = async (
 ): Promise<void> => {
   const { projectId } = req.body;
   try {
+    await prisma.task.deleteMany({
+      where: {
+        projectId: Number(projectId),
+      },
+    });
     const deleteProject = await prisma.project.delete({
       where: {
         id: Number(projectId),

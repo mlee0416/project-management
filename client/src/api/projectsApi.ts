@@ -26,6 +26,14 @@ export const projectsApi = api.injectEndpoints({
     getProjectById: builder.query<Project, string>({
       query: (projectId) => `/projects/projectId/${projectId}`,
     }),
+    deleteProjectById: builder.mutation<Project, string>({
+      query: (id) => ({
+        url: "projects",
+        method: "DELETE",
+        body: { projectId: id },
+      }),
+      invalidatesTags: ["Projects"],
+    }),
   }),
 });
 
@@ -33,4 +41,5 @@ export const {
   useGetProjectsQuery,
   useCreateProjectMutation,
   useGetProjectByIdQuery,
+  useDeleteProjectByIdMutation,
 } = projectsApi;
