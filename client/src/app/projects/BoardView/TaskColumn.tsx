@@ -19,7 +19,7 @@ const TaskColumn = ({
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "task",
     drop: (item: { id: number }) => moveTask(item.id, status),
-    collect: (monitor: any) => ({
+    collect: (monitor) => ({
       isOver: !!monitor.isOver(),
     }),
   }));

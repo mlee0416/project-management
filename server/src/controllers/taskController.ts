@@ -60,6 +60,7 @@ export const createTask = async (
     res.status(500).json({ message: `Error creating a task: ${err.message}` });
   }
 };
+
 export const updateTaskStatus = async (
   req: Request,
   res: Response
@@ -81,15 +82,58 @@ export const updateTaskStatus = async (
   }
 };
 
+export const updateTask = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { taskId } = req.params;
+  const { task } = req.body;
+  const {
+    assignedUserId,
+    authorUserId,
+    description,
+    dueDate,
+    id,
+    points,
+    priority,
+    startDate,
+    status,
+    tags,
+    title,
+  } = task;
+  try {
+    const updatedTask = await prisma.task.update({
+      where: {
+        id: Number(taskId),
+      },
+      data: {
+        assignedUserId,
+        authorUserId,
+        description,
+        dueDate,
+        id,
+        points,
+        priority,
+        startDate,
+        status,
+        tags,
+        title,
+      },
+    });
+    res.json(updatedTask);
+  } catch (error: any) {
+    res.status(500).json({ message: `Error updating task: ${error.message}` });
+  }
+};
 export const deleteTask = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { id } = req.body;
+  const { taskId } = req.params;
   try {
     const deleteTask = await prisma.task.delete({
       where: {
-        id: Number(id),
+        id: Number(taskId),
       },
     });
     res.json(deleteTask);

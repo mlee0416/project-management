@@ -36,7 +36,6 @@ const NewProjectModal = ({ isOpen, onClose }: NewProjectProps) => {
     })
       .unwrap()
       .then((res) => {
-        console.log("res.id", res.id);
         toast.success("Project created");
         router.push(`/projects/${res.id}`);
       })

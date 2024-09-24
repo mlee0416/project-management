@@ -1,30 +1,35 @@
 import Modal from "@/components/Modal";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { formatISO } from "date-fns";
-import { useCreateTaskMutation } from "@/api/tasksApi";
+import { useUpdateTaskMutation } from "@/api/tasksApi";
 import { Priority, Status } from "@/types/tasks/task.enum";
 import { Form, useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useGetUsersQuery } from "@/api/api";
-
 import { toast } from "sonner";
+import { Task } from "@/types/tasks/task.interface";
+import { DevTool } from "@hookform/devtools";
+import { formatYYYYMMDD } from "@/functions/date/formatYYYYMMDD";
 
-type CreateNewTaskModalProps = {
+type EditTaskModalProps = {
   isOpen: boolean;
   onClose: () => void;
   id?: string | null;
+  task: Task;
 };
 
-const CreateNewTaskModal = ({
+const EditTaskModal = ({
   isOpen,
   onClose,
   id = null,
-}: CreateNewTaskModalProps) => {
+  task,
+}: EditTaskModalProps) => {
+  console.log("task", task);
   const { data: users } = useGetUsersQuery();
-  const [createTask, { isLoading }] = useCreateTaskMutation();
+  const [updateTask, { isLoading }] = useUpdateTaskMutation();
 
   const CreateNewTaskSchema = z.object({
     title: z.string().min(1, { message: "Valid title is required" }),
@@ -43,19 +48,23 @@ const CreateNewTaskModal = ({
     mode: "onChange",
     resolver: zodResolver(CreateNewTaskSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      status: Status.ToDo,
-      priority: Priority.Backlog,
-      tags: "",
-      startDate: "",
-      dueDate: "",
-      authorUserId: "",
-      assignedUserId: "",
-      projectId: "",
+      title: task.title || "",
+      description: task.description || "",
+      status: task.status || Status.ToDo,
+      priority: task.priority || Priority.Backlog,
+      tags: task.tags || "",
+      startDate: formatYYYYMMDD(task.startDate) || "",
+      dueDate: formatYYYYMMDD(task.dueDate) || "",
+      authorUserId: task.authorUserId ? task.authorUserId.toString() : "",
+      assignedUserId: task.assignedUserId ? task.assignedUserId.toString() : "",
+      projectId: task.projectId.toString() || "",
+    },
+    resetOptions: {
+      keepDirtyValues: false, // user-interacted input will be retained
     },
   });
 
+  useEffect(() => {}, [task]);
   const { errors } = form.formState;
 
   const handleSubmit = async (values: z.infer<typeof CreateNewTaskSchema>) => {
@@ -73,20 +82,27 @@ const CreateNewTaskModal = ({
       representation: "complete",
     });
 
-    createTask({
-      ...values,
-      startDate: formattedStartDate,
-      dueDate: formattedDueDate,
-      authorUserId: parseInt(values.authorUserId),
-      assignedUserId: parseInt(values.assignedUserId),
-      projectId: id !== null ? Number(id) : Number(values.projectId),
+    updateTask({
+      taskId: Number(id),
+      task: {
+        ...values,
+        id: Number(id),
+        startDate: formattedStartDate,
+        dueDate: formattedDueDate,
+        authorUserId: parseInt(values.authorUserId),
+        assignedUserId: parseInt(values.assignedUserId),
+        projectId: id !== null ? Number(id) : Number(values.projectId),
+      },
     })
       .unwrap()
-      .then(() => toast.success("Task created"))
+      .then(() => toast.success("Task updated"))
       .catch((error) =>
-        toast.error(`Unable to create task: ${error?.data?.message}`),
+        toast.error(`Unable to update task: ${error?.data?.message}`),
       )
-      .finally(() => closeCreateNewTaskModal());
+      .finally(() => {
+        form.reset();
+        closeCreateNewTaskModal();
+      });
   };
 
   const closeCreateNewTaskModal = () => {
@@ -101,11 +117,7 @@ const CreateNewTaskModal = ({
     "w-full rounded border border-gray-300 p-2 shadow-sm dark:border-dark-tertiary dark:bg-dark-tertiary dark:text-white dark:focus:outline-none";
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={closeCreateNewTaskModal}
-      name="Create New Task"
-    >
+    <Modal isOpen={isOpen} onClose={closeCreateNewTaskModal} name="Edit Task">
       <Form {...form}>
         <form className="mt-4 space-y-6">
           <div>
@@ -239,7 +251,6 @@ const CreateNewTaskModal = ({
             <select
               {...form.register("assignedUserId")}
               className={selectStyles}
-              defaultValue={""}
             >
               <option disabled value="">
                 Select Assignee
@@ -271,12 +282,13 @@ const CreateNewTaskModal = ({
             type="submit"
             className={`focus-offset-2 mt-4 flex w-full justify-center rounded-md border border-transparent bg-blue-primary px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600`}
           >
-            {isLoading ? "Creating..." : "Create Task"}
+            {isLoading ? "Updating..." : "Update Task"}
           </button>
         </form>
       </Form>
+      <DevTool control={form.control} />
     </Modal>
   );
 };
 
-export default CreateNewTaskModal;
+export default EditTaskModal;

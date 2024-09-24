@@ -21,10 +21,8 @@ import { useGetProjectsQuery } from "@/api/projectsApi";
 const Sidebar = () => {
   const [showProjects, setShowProjects] = useState(true);
   const [showPriority, setShowPriority] = useState(true);
-  console.log("showProjects", showProjects, showPriority);
 
   const { data: projects } = useGetProjectsQuery();
-  console.log("project", projects);
   const dispatch = useAppDispatch();
   const isSidebarCollapsed = useAppSelector(
     (state) => state.global.isSidebarCollapsed,
@@ -102,7 +100,7 @@ const Sidebar = () => {
                 key={project.id}
                 icon={Briefcase}
                 label={project.name}
-                href={`/projects/${project.id}`}
+                href={`/projects/${project.id}/home`}
               />
             ))}
         </nav>

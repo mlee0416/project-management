@@ -7,9 +7,9 @@ import StoreProvider, { useAppSelector } from "./redux";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const isSideBarCollapsed = useAppSelector(
-    (state) => state.global.isSidebarCollapsed
+    (state) => state.global.isSidebarCollapsed,
   );
-  console.log("isSideBarCollapsed", isSideBarCollapsed);
+
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
   useEffect(() => {

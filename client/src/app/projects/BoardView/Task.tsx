@@ -8,7 +8,7 @@ import { formatDate } from "@/functions/date/formatDate";
 import { Menu, MenuItem } from "@mui/material";
 import { useDeleteTaskMutation } from "@/api/tasksApi";
 import { toast } from "sonner";
-
+import Link from "next/link";
 type TaskProps = {
   task: TaskType;
 };
@@ -57,6 +57,7 @@ export const Task = ({ task }: TaskProps) => {
   };
 
   const handleDeleteTask = async () => {
+    setAnchorEl(null);
     deleteTask(task.id)
       .unwrap()
       .then(() => toast.success("Task deleted"))
@@ -64,10 +65,6 @@ export const Task = ({ task }: TaskProps) => {
         toast.error(`Cannot delete task: ${error?.data?.message}`),
       )
       .finally(() => handleClose());
-  };
-
-  const handleEditTask = () => {
-    console.log("opening task");
   };
 
   const PriorityTag = ({ priority }: { priority: TaskType["priority"] }) => (
@@ -79,112 +76,114 @@ export const Task = ({ task }: TaskProps) => {
   );
 
   return (
-    <div
-      ref={(instance) => {
-        drag(instance);
-      }}
-      className={`mb-4 cursor-pointer rounded-md bg-white shadow dark:bg-dark-secondary ${
-        isDragging ? "opacity-50" : "opacity-100"
-      }`}
-    >
-      {task.attachments && task.attachments.length > 0 && (
-        <Image
-          src={`/${task.attachments[0].fileURL}`}
-          alt={task.attachments[0].fileName}
-          width={400}
-          height={200}
-          className="h-auto w-full rounded-t-md"
-        />
-      )}
-      <div className="p-4 md:p-6">
-        <div className="flex items-start justify-between">
-          <div className="flex flex-1 flex-wrap items-center gap-2">
-            {task.priority && <PriorityTag priority={task.priority} />}
-            <div className="flex gap-2">
-              {taskTagsSplit.map((tag) => (
-                <div
-                  key={tag}
-                  className="rounded-full bg-blue-100 px-2 py-1 text-xs"
-                >
-                  {" "}
-                  {tag}
-                </div>
-              ))}
+    <Link href={`${task.id}`}>
+      <div
+        ref={(instance) => {
+          drag(instance);
+        }}
+        className={`mb-4 cursor-pointer rounded-md bg-white shadow dark:bg-dark-secondary ${
+          isDragging ? "opacity-50" : "opacity-100"
+        }`}
+      >
+        {task.attachments && task.attachments.length > 0 && (
+          <Image
+            src={`/${task.attachments[0].fileURL}`}
+            alt={task.attachments[0].fileName}
+            width={400}
+            height={200}
+            className="h-auto w-full rounded-t-md"
+          />
+        )}
+        <div className="p-4 md:p-6">
+          <div className="flex items-start justify-between">
+            <div className="flex flex-1 flex-wrap items-center gap-2">
+              {task.priority && <PriorityTag priority={task.priority} />}
+              <div className="flex gap-2">
+                {taskTagsSplit.map((tag) => (
+                  <div
+                    key={tag}
+                    className="rounded-full bg-blue-100 px-2 py-1 text-xs"
+                  >
+                    {" "}
+                    {tag}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <button
+                onClick={handleClick}
+                className="flex h-6 w-4 flex-shrink-0 items-center justify-center dark:text-neutral-500"
+              >
+                <EllipsisVertical size={26} />
+              </button>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button",
+                  sx: { paddingTop: 0, paddingBottom: 0 },
+                }}
+              >
+                {/* <MenuItem onClick={handleEditTask}>Edit</MenuItem> */}
+                <MenuItem onClick={handleDeleteTask}>Delete</MenuItem>
+              </Menu>
             </div>
           </div>
-          <div>
-            <button
-              onClick={handleClick}
-              className="flex h-6 w-4 flex-shrink-0 items-center justify-center dark:text-neutral-500"
-            >
-              <EllipsisVertical size={26} />
-            </button>
-            <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              MenuListProps={{
-                "aria-labelledby": "basic-button",
-                sx: { paddingTop: 0, paddingBottom: 0 },
-              }}
-            >
-              <MenuItem onClick={handleEditTask}>Edit</MenuItem>
-              <MenuItem onClick={handleDeleteTask}>Delete</MenuItem>
-            </Menu>
-          </div>
-        </div>
 
-        <div className="my-3 flex justify-between">
-          <h4 className="text-md font-bold dark:text-white">{task.title}</h4>
-          {typeof task.points === "number" && (
-            <div className="text-xs font-semibold dark:text-white">
-              {task.points} pts
+          <div className="my-3 flex justify-between">
+            <h4 className="text-md font-bold dark:text-white">{task.title}</h4>
+            {typeof task.points === "number" && (
+              <div className="text-xs font-semibold dark:text-white">
+                {task.points} pts
+              </div>
+            )}
+          </div>
+
+          <div className="text-xs text-gray-500 dark:text-neutral-500">
+            {formattedStartDate && <span>{formattedStartDate} - </span>}
+            {formattedDueDate && <span>{formattedDueDate}</span>}
+          </div>
+          <p className="text-sm text-gray-600 dark:text-neutral-500">
+            {task.description}
+          </p>
+          <div className="mt-4 border-t border-gray-200 dark:border-stroke-dark" />
+
+          {/* Users */}
+          <div className="mt-3 flex items-center justify-between">
+            <div className="flex -space-x-[6px] overflow-hidden">
+              {task.assignee && (
+                <Image
+                  key={`${task.assignee.userId}/blah`}
+                  src={`/${task.assignee.profilePictureUrl!}`}
+                  alt={task.assignee.username}
+                  width={30}
+                  height={30}
+                  className="h-8 w-8 rounded-full border-2 border-white object-cover dark:border-dark-secondary"
+                />
+              )}
+              {task.author && (
+                <Image
+                  key={`${task.author.userId}/${task.author.username}`}
+                  src={`/${task.author.profilePictureUrl!}`}
+                  alt={task.author.username}
+                  width={30}
+                  height={30}
+                  className="h-8 w-8 rounded-full border-2 border-white object-cover dark:border-dark-secondary"
+                />
+              )}
             </div>
-          )}
-        </div>
-
-        <div className="text-xs text-gray-500 dark:text-neutral-500">
-          {formattedStartDate && <span>{formattedStartDate} - </span>}
-          {formattedDueDate && <span>{formattedDueDate}</span>}
-        </div>
-        <p className="text-sm text-gray-600 dark:text-neutral-500">
-          {task.description}
-        </p>
-        <div className="mt-4 border-t border-gray-200 dark:border-stroke-dark" />
-
-        {/* Users */}
-        <div className="mt-3 flex items-center justify-between">
-          <div className="flex -space-x-[6px] overflow-hidden">
-            {task.assignee && (
-              <Image
-                key={`${task.assignee.userId}/blah`}
-                src={`/${task.assignee.profilePictureUrl!}`}
-                alt={task.assignee.username}
-                width={30}
-                height={30}
-                className="h-8 w-8 rounded-full border-2 border-white object-cover dark:border-dark-secondary"
-              />
-            )}
-            {task.author && (
-              <Image
-                key={`${task.author.userId}/${task.author.username}`}
-                src={`/${task.author.profilePictureUrl!}`}
-                alt={task.author.username}
-                width={30}
-                height={30}
-                className="h-8 w-8 rounded-full border-2 border-white object-cover dark:border-dark-secondary"
-              />
-            )}
-          </div>
-          <div className="flex items-center text-gray-500 dark:text-neutral-500">
-            <MessageSquareMore size={20} />
-            <span className="ml-1 text-sm dark:text-neutral-400">
-              {numberOfComments}
-            </span>
+            <div className="flex items-center text-gray-500 dark:text-neutral-500">
+              <MessageSquareMore size={20} />
+              <span className="ml-1 text-sm dark:text-neutral-400">
+                {numberOfComments}
+              </span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
