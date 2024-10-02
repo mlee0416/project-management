@@ -9,6 +9,8 @@ import { Menu, MenuItem } from "@mui/material";
 import { useDeleteTaskMutation } from "@/api/tasksApi";
 import { toast } from "sonner";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
 type TaskProps = {
   task: TaskType;
 };
@@ -16,13 +18,15 @@ type TaskProps = {
 export const Task = ({ task }: TaskProps) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-
+  const pathName = usePathname();
   const [deleteTask] = useDeleteTaskMutation();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+  const handleClose = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     setAnchorEl(null);
   };
 
@@ -56,7 +60,10 @@ export const Task = ({ task }: TaskProps) => {
     }
   };
 
-  const handleDeleteTask = async () => {
+  const handleDeleteTask = async (
+    event: React.MouseEvent<HTMLLIElement, MouseEvent>,
+  ) => {
+    event.preventDefault();
     setAnchorEl(null);
     deleteTask(task.id)
       .unwrap()
@@ -64,7 +71,7 @@ export const Task = ({ task }: TaskProps) => {
       .catch((error) =>
         toast.error(`Cannot delete task: ${error?.data?.message}`),
       )
-      .finally(() => handleClose());
+      .finally(() => handleClose);
   };
 
   const PriorityTag = ({ priority }: { priority: TaskType["priority"] }) => (
@@ -76,7 +83,7 @@ export const Task = ({ task }: TaskProps) => {
   );
 
   return (
-    <Link href={`${task.id}`}>
+    <Link href={`${pathName}/${task.id}`}>
       <div
         ref={(instance) => {
           drag(instance);
@@ -127,7 +134,6 @@ export const Task = ({ task }: TaskProps) => {
                   sx: { paddingTop: 0, paddingBottom: 0 },
                 }}
               >
-                {/* <MenuItem onClick={handleEditTask}>Edit</MenuItem> */}
                 <MenuItem onClick={handleDeleteTask}>Delete</MenuItem>
               </Menu>
             </div>

@@ -1,6 +1,9 @@
 import React from "react";
 import Modal from "../Modal";
 import { useRouter } from "next/navigation";
+import { useGetTaskQuery } from "@/api/tasksApi";
+// import { formatDate } from "@/functions/date/formatDate";
+import EditTaskModal from "../EditTask";
 
 type TaskDetailsModalProps = {
   taskId: string;
@@ -8,14 +11,20 @@ type TaskDetailsModalProps = {
 
 const TaskDetailsModal = ({ taskId }: TaskDetailsModalProps) => {
   console.log("task id ", taskId);
+
   const router = useRouter();
+
+  const { data: task } = useGetTaskQuery(taskId, {
+    refetchOnMountOrArgChange: true,
+  });
+  console.log("data", task);
   return (
     <Modal
       isOpen={Boolean(taskId)}
-      onClose={() => router.push("home")}
-      name={"test"}
+      onClose={() => router.back()}
+      name={`${task && task.title}`}
     >
-      test
+      {task && <EditTaskModal id={taskId} task={task} />}
     </Modal>
   );
 };

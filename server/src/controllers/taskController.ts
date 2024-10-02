@@ -22,6 +22,26 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ message: `Error retrieving tasks: ${err.message}` });
   }
 };
+
+export const getTask = async (req: Request, res: Response): Promise<void> => {
+  const { taskId } = req.params;
+  try {
+    const task = await prisma.task.findUnique({
+      where: {
+        id: Number(taskId),
+      },
+      include: {
+        author: true,
+        assignee: true,
+        comments: true,
+        attachments: true,
+      },
+    });
+    res.json(task);
+  } catch (err: any) {
+    res.status(500).json({ message: `Error retrieving task: ${err.message}` });
+  }
+};
 export const createTask = async (
   req: Request,
   res: Response
