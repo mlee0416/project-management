@@ -12,7 +12,7 @@ import { useGetUsersQuery } from "@/api/api";
 import { toast } from "sonner";
 import { formatYYYYMMDD } from "@/functions/date/formatYYYYMMDD";
 import { Task } from "@/types/tasks/task.interface";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 type EditTaskModalProps = {
   onClose?: () => void;
@@ -20,8 +20,8 @@ type EditTaskModalProps = {
   task: Task;
 };
 
-const EditTaskModal = ({ id, task }: EditTaskModalProps) => {
-  console.log("task", task);
+const EditTaskModal = ({ id, task, onClose }: EditTaskModalProps) => {
+  const pathName = usePathname();
   const router = useRouter();
   const { data: users } = useGetUsersQuery();
   const [updateTask, { isLoading }] = useUpdateTaskMutation();
@@ -98,8 +98,7 @@ const EditTaskModal = ({ id, task }: EditTaskModalProps) => {
         toast.error(`Unable to update task: ${error?.data?.message}`),
       )
       .finally(() => {
-        form.reset();
-        router.back();
+        onClose;
       });
   };
 

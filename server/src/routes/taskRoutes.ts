@@ -4,6 +4,7 @@ import {
   deleteTask,
   getTask,
   getTasks,
+  getUserTasks,
   updateTask,
   updateTaskStatus,
 } from "../controllers/taskController";
@@ -16,5 +17,5 @@ router.post("/", createTask);
 router.delete("/:taskId", deleteTask);
 router.patch("/:taskId/status", updateTaskStatus);
 router.patch("/:taskId", updateTask);
-
+router.get("/user/:userId", getUserTasks);
 export default router;

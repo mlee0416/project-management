@@ -2,7 +2,6 @@ import { Task } from "@/types/tasks/task.interface";
 import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import React from "react";
 
 type Props = {
@@ -10,9 +9,9 @@ type Props = {
 };
 
 const TaskCard = ({ task }: Props) => {
-  const pathName = usePathname();
+  console.log("task", task);
   return (
-    <Link href={`${pathName}/${task.id}`}>
+    <Link href={`projects/${task.projectId}/board/${task.id}`}>
       <div className="mb-3 rounded bg-white p-4 shadow dark:bg-dark-secondary dark:text-white">
         {task.attachments && task.attachments.length > 0 && (
           <div>
