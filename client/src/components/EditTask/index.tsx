@@ -1,6 +1,4 @@
-// import Modal from "@/components/Modal";
-
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { formatISO } from "date-fns";
 import { useUpdateTaskMutation } from "@/api/tasksApi";
 import { Priority, Status } from "@/types/tasks/task.enum";
@@ -51,18 +49,16 @@ const EditTaskModal = ({ id, task, onClose }: EditTaskModalProps) => {
   const form = useForm<z.infer<typeof CreateNewTaskSchema>>({
     mode: "onChange",
     resolver: zodResolver(CreateNewTaskSchema),
-    defaultValues: useMemo(() => {
-      return defaultValues;
-    }, [task]),
+    defaultValues: defaultValues,
   });
 
   useEffect(() => {
     form.reset(defaultValues);
-  }, [task]);
+  });
 
   const { errors } = form.formState;
 
-  const handleSubmit = async (values: z.infer<typeof CreateNewTaskSchema>) => {
+  const handleSubmit = (values: z.infer<typeof CreateNewTaskSchema>) => {
     if (
       !values.title ||
       !values.authorUserId ||
