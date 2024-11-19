@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetAuthUserQuery } from "@/api/api";
+// import { useGetAuthUserQuery } from "@/api/api";
 import { useGetTasksByUserQuery } from "@/api/tasksApi";
 import { useAppSelector } from "@/app/redux";
 import CreateNewTaskModal from "@/components/CreateNewTask";

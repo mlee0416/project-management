@@ -12,7 +12,6 @@ import { useGetUsersQuery } from "@/api/api";
 import { toast } from "sonner";
 import { formatYYYYMMDD } from "@/functions/date/formatYYYYMMDD";
 import { Task } from "@/types/tasks/task.interface";
-import { usePathname, useRouter } from "next/navigation";
 
 type EditTaskModalProps = {
   onClose?: () => void;
@@ -21,8 +20,6 @@ type EditTaskModalProps = {
 };
 
 const EditTaskModal = ({ id, task, onClose }: EditTaskModalProps) => {
-  const pathName = usePathname();
-  const router = useRouter();
   const { data: users } = useGetUsersQuery();
   const [updateTask, { isLoading }] = useUpdateTaskMutation();
 
