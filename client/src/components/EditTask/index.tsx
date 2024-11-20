@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { formatISO } from "date-fns";
 import { useUpdateTaskMutation } from "@/api/tasksApi";
 import { Priority, Status } from "@/types/tasks/task.enum";
@@ -12,7 +12,7 @@ import { formatYYYYMMDD } from "@/functions/date/formatYYYYMMDD";
 import { Task } from "@/types/tasks/task.interface";
 
 type EditTaskModalProps = {
-  onClose?: () => void;
+  onClose: () => void;
   id?: string | undefined;
   task: Task;
 };
@@ -49,16 +49,18 @@ const EditTaskModal = ({ id, task, onClose }: EditTaskModalProps) => {
   const form = useForm<z.infer<typeof CreateNewTaskSchema>>({
     mode: "onChange",
     resolver: zodResolver(CreateNewTaskSchema),
-    defaultValues: defaultValues,
+    defaultValues: useMemo(() => {
+      return defaultValues;
+    }, [task]),
   });
 
   useEffect(() => {
     form.reset(defaultValues);
-  });
+  }, [task]);
 
   const { errors } = form.formState;
 
-  const handleSubmit = (values: z.infer<typeof CreateNewTaskSchema>) => {
+  const handleSubmit = async (values: z.infer<typeof CreateNewTaskSchema>) => {
     if (
       !values.title ||
       !values.authorUserId ||
@@ -91,7 +93,7 @@ const EditTaskModal = ({ id, task, onClose }: EditTaskModalProps) => {
         toast.error(`Unable to update task: ${error?.data?.message}`),
       )
       .finally(() => {
-        onClose;
+        onClose();
       });
   };
 
