@@ -4,7 +4,6 @@ export enum ERoutes {
   SEARCH = "/search",
   SETTINGS = "/settings",
   USER = "/user",
-  USERS = "/teams",
   // Priority Links
   PRIORITY_DEFAULT = "/priority",
   PRIORITY_URGENT = "/priority/urgent",

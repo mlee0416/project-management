@@ -2,17 +2,24 @@ import { Task } from "@/types/tasks/task.interface";
 import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React from "react";
 
 type Props = {
   task: Task;
+  searchCard?: boolean;
 };
 
-const TaskCard = ({ task }: Props) => {
+const TaskCard = ({ task, searchCard }: Props) => {
   const params = useParams();
+  console.log("params", params);
+  const route = () => {
+    if (searchCard) return `projects/${task.projectId}/board/${task.id}`;
+    if (params.slug?.length) return `${params.slug[1]}/${task.id}`;
+    return "/";
+  };
   return (
-    <Link href={`${params.slug[1]}/${task.id}`}>
+    <Link href={route()}>
       <div className="mb-3 rounded bg-white p-4 shadow dark:bg-dark-secondary dark:text-white">
         {task.attachments && task.attachments.length > 0 && (
           <div>
@@ -65,6 +72,7 @@ const TaskCard = ({ task }: Props) => {
           <strong>Assignee:</strong>{" "}
           {task.assignee ? task.assignee.username : "Unassigned"}
         </p>
+        testster
       </div>
     </Link>
   );

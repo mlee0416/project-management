@@ -27,9 +27,4 @@ export const menuList = [
     label: "User",
     href: ERoutes.USER,
   },
-  {
-    icon: Users,
-    label: "Teams",
-    href: ERoutes.USERS,
-  },
 ];

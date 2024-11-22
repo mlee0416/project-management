@@ -49,7 +49,7 @@ const Search = () => {
               <h2 className="mb-4 text-2xl font-semibold">Tasks</h2>
             )}
             {searchResults.tasks?.map((task) => (
-              <TaskCard key={task.id} task={task} />
+              <TaskCard key={task.id} task={task} searchCard />
             ))}
 
             {searchResults.projects && searchResults.projects?.length > 0 && (
