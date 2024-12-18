@@ -27,13 +27,11 @@ const Project = ({ params }: ProjectProps) => {
   return (
     <div>
       {taskId && <TaskDetailsModal taskId={taskId} />}
-      {taskId && (
-        <CreateNewTaskModal
-          isOpen={isModalNewTaskOpen}
-          onClose={() => setIsModalNewTaskOpen(false)}
-          id={id}
-        />
-      )}
+      <CreateNewTaskModal
+        isOpen={isModalNewTaskOpen}
+        onClose={() => setIsModalNewTaskOpen(false)}
+        id={id}
+      />
       <ProjectHeader activeTab={activeTab} id={id} />
       {activeTab === "board" && (
         <BoardView id={id} setIsModalNewTaskOpen={setIsModalNewTaskOpen} />
